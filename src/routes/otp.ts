@@ -18,7 +18,7 @@ export const route: Route = {
         const otp = (!body.otp || body.otp === 'random') ? String(crypto.randomInt(0, 1_000_000)).padStart(6, '0') : body.otp;
         try {
             await client.sendMessage(`${body.to}@c.us`, stripIndents`
-                *${body.otp}* is your one-time password for ${body.from}.
+                *${otp}* is your one-time password for ${body.from}.
                 Do not share this OTP with anyone.
                 ${body.validity ? `Valid for ${moment.duration(Number(body.validity), 'seconds').asMinutes()} minutes.` : ''}
             `);
