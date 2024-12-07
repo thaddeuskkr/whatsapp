@@ -9,6 +9,6 @@ export const route: Route = {
             https://github.com/thaddeuskkr/whatsapp
 
             Your IP address is ${(request.headers.get('x-forwarded-for') || server.requestIP(request)?.address) ?? 'unknown'}
-        `);
+        `, { status: 200 });
     },
 };
