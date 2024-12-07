@@ -1,11 +1,15 @@
 {
   "name": "wweb-api",
+  "version": "0.0.1-alpha",
   "module": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun run . | pino-pretty"
+    "dev": "bun --watch . | pino-pretty"
   },
   "dependencies": {
+    "@types/common-tags": "^1.8.4",
+    "common-tags": "^1.8.2",
+    "moment": "^2.30.1",
     "pino": "^9.5.0",
     "qrcode-terminal": "^0.12.0",
     "whatsapp-web.js": "^1.26.0"
