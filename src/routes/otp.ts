@@ -13,7 +13,7 @@ export const route: Route = {
         } catch {
             return new Response('Bad request', { status: 400 });
         }
-        if (['to', 'otp', 'from'].some((key) => !body[key])) return new Response('Missing required fields', { status: 400 });
+        if (['to', 'from'].some((key) => !body[key])) return new Response('Missing required fields', { status: 400 });
         const otp = (!body.otp || body.otp === 'random') ? String(crypto.randomInt(0, 1_000_000)).padStart(6, '0') : body.otp;
         try {
             await client.sendMessage(`${body.to}@c.us`, stripIndents`
