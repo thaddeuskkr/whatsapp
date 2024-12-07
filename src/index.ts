@@ -1,18 +1,28 @@
+import crypto from 'node:crypto';
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 import Pino from 'pino';
 import qrcode from 'qrcode-terminal';
-import { Client, LocalAuth } from 'whatsapp-web.js';
+import { Client, LocalAuth, type ClientOptions } from 'whatsapp-web.js';
 import type { Route } from './types';
 
 const packageJson = Bun.file(path.join(import.meta.dir, '..', 'package.json'));
 const json = await packageJson.json();
 const version = json.version;
 
-const client = new Client({
-    puppeteer: {
+let puppeteer_arguments: ClientOptions['puppeteer'] = {
+    headless: false,
+};
+
+if (process.env.HEADLESS?.toLowerCase() === 'true') {
+    puppeteer_arguments = {
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    },
+        headless: true,
+    };
+}
+
+const client = new Client({
+    puppeteer: puppeteer_arguments,
     authStrategy: new LocalAuth({
         dataPath: 'data',
     }),
@@ -20,6 +30,7 @@ const client = new Client({
 
 client.logger = Pino();
 client.ready = false;
+const token = process.env.TOKEN || crypto.randomBytes(8).toString('hex');
 
 const routes = new Map();
 
@@ -37,7 +48,7 @@ Bun.serve({
         if (!client.ready) return new Response('Server not ready for requests', { status: 503 });
         const url = new URL(request.url);
         const route = routes.get(url.pathname);
-        return route ? route.request({ client, server, request, url, version }) : new Response(`Not found: ${url.pathname}`, { status: 404 });
+        return route ? route.request({ client, server, request, url, version, token }) : new Response(`Not found: ${url.pathname}`, { status: 404 });
     },
 });
 
@@ -65,6 +76,8 @@ client.on('disconnected', (reason) => {
 
 client.on('ready', () => {
     client.logger.info('Client is ready!');
+    client.logger.warn('Routes that require authentication will need the following token in the Authorization header:');
+    client.logger.warn(`${token}`);
     client.ready = true;
 });
 

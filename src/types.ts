@@ -16,5 +16,6 @@ export type Route = {
         request: Request;
         server: Server;
         version: string;
+        token: string;
     }) => Response | Promise<Response>;
 };

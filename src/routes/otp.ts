@@ -5,8 +5,9 @@ import type { Route } from '../types';
 
 export const route: Route = {
     url: '/otp',
-    async request({ request, client }) {
+    async request({ request, client, token }) {
         if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 });
+        if (request.headers.get('authorization') !== token) return new Response('Unauthorized', { status: 401 });
         let body;
         try {
             body = await request.json();
