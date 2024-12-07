@@ -22,9 +22,14 @@ export const route: Route = {
                 ${body.validity ? `Valid for ${moment.duration(Number(body.validity), 'seconds').asMinutes()} minutes.` : ''}
             `);
         } catch (error) {
-            return new Response(stripIndents`
-                Error: ${error}
-            `);
+            return new Response(JSON.stringify({
+                status: 400,
+                message: `Failed to send OTP to ${body.to}`,
+                error: error,
+                to: body.to,
+                from: body.from,
+                otp,
+            }), { status: 400 });
         }
         return new Response(JSON.stringify({
             status: 200,
@@ -32,6 +37,6 @@ export const route: Route = {
             to: body.to,
             from: body.from,
             otp,
-        }));
+        }), { status: 200 });
     },
 };
