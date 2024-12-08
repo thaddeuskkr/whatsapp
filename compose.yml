@@ -1,0 +1,13 @@
+services:
+  whatsapp:
+    container_name: whatsapp
+    build: .
+    networks:
+      - caddy
+    environment:
+      - TOKEN="Fz58BQK3GS2YCvn4"
+      - HEADLESS="true"
+
+networks:
+  caddy:
+    external: true
