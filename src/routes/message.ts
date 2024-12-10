@@ -26,7 +26,7 @@ export const route: Route = {
         }
         return new Response(JSON.stringify({
             status: 200,
-            message: `Failed to send message to ${body.to}`,
+            message: `Message successfully sent to ${body.to}`,
             sent_message: body.message,
             to: body.to,
             from: body.from,
