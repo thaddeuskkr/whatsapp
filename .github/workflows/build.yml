@@ -12,7 +12,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  PUPPETEER_SKIP_DOWNLOAD: true
 
 jobs:
   build-and-push:
@@ -63,7 +62,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
-          #platforms: ${{ github.event_name != 'pull_request' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
 
       - name: Sign the published Docker image
         if: ${{ github.event_name != 'pull_request' }}
