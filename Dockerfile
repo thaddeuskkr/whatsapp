@@ -1,6 +1,8 @@
 FROM oven/bun:latest AS base
 WORKDIR /app
 
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+
 FROM base AS install
 RUN mkdir -p /temp/dev
 COPY package.json bun.lockb /temp/dev/
