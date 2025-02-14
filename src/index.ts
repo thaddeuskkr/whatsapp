@@ -42,7 +42,7 @@ for (const file of routeFiles) {
 }
 
 Bun.serve({
-    port: 4567,
+    port: Number(process.env.PORT || 4567),
     development: process.env.NODE_ENV !== 'production',
     fetch: async (request, server) => {
         if (!client.ready) return new Response('Server not ready for requests', { status: 503 });
