@@ -17,14 +17,25 @@ const route = (app: Server) => app.post('', async ({ status, headers: { authoriz
 
 	const { lastMessageId } = body;
 
-	const lastMessage = await Message.findOne({ _id: lastMessageId });
-	if (!lastMessage) {
-		return status(404, { success: false, error: 'Invalid last message ID' });
+	let newMessages;
+	let editedMessages;
+	let deletedMessages;
+
+	if (lastMessageId && typeof lastMessageId === 'string' && lastMessageId.length > 0) {
+		const lastMessage = await Message.findOne({ _id: lastMessageId });
+		if (!lastMessage) {
+			return status(404, { success: false, error: 'Invalid last message ID' });
+		}
+
+		newMessages = await Message.find({ timestamp: { $gt: lastMessage.timestamp } });
+		editedMessages = await Message.find({ latestEditSenderTimestamp: { $gt: lastMessage.timestamp } });
+		deletedMessages = await Message.find({ type: 'revoked', updatedAt: { $gt: lastMessage.timestamp } });
+	} else {
+		newMessages = await Message.find({}).sort({ timestamp: -1 }).limit(100);
+		editedMessages = await Message.find({ latestEditSenderTimestamp: { $exists: true } }).sort({ latestEditSenderTimestamp: -1 }).limit(100);
+		deletedMessages = await Message.find({ type: 'revoked' }).sort({ updatedAt: -1 }).limit(100);
 	}
 
-	const newMessages = await Message.find({ timestamp: { $gt: lastMessage.timestamp } });
-	const editedMessages = await Message.find({ latestEditSenderTimestamp: { $gt: lastMessage.timestamp } });
-	const deletedMessages = await Message.find({ type: 'revoked', updatedAt: { $gt: lastMessage.timestamp } });
 	if (newMessages.length === 0 && editedMessages.length === 0 && deletedMessages.length === 0) {
 		return {
 			success: true,
@@ -48,7 +59,7 @@ const route = (app: Server) => app.post('', async ({ status, headers: { authoriz
 	};
 }, {
 	body: t.Object({
-		lastMessageId: t.String(),
+		lastMessageId: t.Optional(t.String()),
 	}),
 });
 
