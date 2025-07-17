@@ -40,6 +40,7 @@ try {
 const whatsapp = new Client({
 	puppeteer: {
 		args: ['--no-sandbox', '--disable-setuid-sandbox'],
+		headless: Bun.env.HEADLESS !== 'false',
 	},
 	authStrategy: new LocalAuth({
 		dataPath: '.whatsapp',
