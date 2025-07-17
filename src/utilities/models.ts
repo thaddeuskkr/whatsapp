@@ -24,7 +24,7 @@ const messageSchema = new mongoose.Schema({ // https://docs.wwebjs.dev/Message.h
 	hasReaction: { type: Boolean, required: true }, // Indicates whether there are reactions to the message
 	wId: { type: String, required: true }, // ID that represents the message
 	isEphemeral: { type: Boolean, required: false }, // Indicates if the message will disappear after it expires
-	isForwarded: { type: Boolean, required: true }, // Indicates if the message was forwarded
+	isForwarded: { type: Boolean, required: false }, // Indicates if the message was forwarded
 	isGif: { type: Boolean, required: false }, // Indicates if the message is a GIF
 	isStarred: { type: Boolean, required: true }, // Indicates if the message was starred
 	isStatus: { type: Boolean, required: true }, // Indicates if the message is a status update
