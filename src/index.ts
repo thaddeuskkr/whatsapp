@@ -4,7 +4,6 @@ import { autoload } from 'elysia-autoload';
 import pino from 'pino';
 import { Client, LocalAuth } from 'whatsapp-web.js';
 import mongoose from 'mongoose';
-import type { ElysiaWS } from 'elysia/ws';
 import { initializeWhatsAppEvents } from './events/whatsapp.ts';
 import { initializeMongooseEvents } from './events/database.ts';
 import { Tokens } from './utilities/models.ts';
@@ -30,7 +29,7 @@ initializeMongooseEvents(mongoose, logger);
 
 try {
 	await mongoose.connect(Bun.env.MONGODB_URI ?? 'mongodb://localhost:27017/whatsapp', {
-		dbName: 'whatsapp',
+		dbName: Bun.env.MONGODB_DB ?? 'whatsapp',
 	});
 } catch (error) {
 	logger.error('Failed to make initial connection to MongoDB');

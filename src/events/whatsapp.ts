@@ -4,6 +4,9 @@ import type { Client } from 'whatsapp-web.js';
 import { Message } from '../utilities/models.ts';
 import { connections } from '../routes/index.ts';
 import { Op } from '../utilities/constants.ts';
+import { messageCreate } from '../custom/message-create.ts';
+import { messageEdit } from '../custom/message-edit.ts';
+import { messageDelete } from '../custom/message-delete.ts';
 
 const initializeEvents = (whatsapp: Client, logger: Logger) => {
 	whatsapp.once('ready', () => {
@@ -73,6 +76,8 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
 				timestamp: created.timestamp,
 			},
 		});
+
+		messageCreate(message);
 	});
 
 	whatsapp.on('message_edit', async message => {
@@ -98,6 +103,8 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
 				timestamp: dbMessage.latestEditSenderTimestamp,
 			},
 		});
+
+		messageEdit(message);
 	});
 
 	whatsapp.on('message_revoke_everyone', async message => {
@@ -127,6 +134,8 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
 				timestamp: dbMessage.updatedAt,
 			},
 		});
+
+		messageDelete(message);
 	});
 
 	logger.trace('WhatsApp events initialized');
