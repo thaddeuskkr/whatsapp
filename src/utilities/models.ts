@@ -11,7 +11,7 @@ const tokensSchema = new mongoose.Schema({
 const messageSchema = new mongoose.Schema({ // https://docs.wwebjs.dev/Message.html
 	ack: { type: Number, required: true }, // ACK status for the message
 	author: { type: String, required: false }, // If the message was sent to a group, this field will contain the user that sent the message.
-	body: { type: String, required: true }, // Message content
+	body: { type: String, required: false }, // Message content
 	broadcast: { type: Boolean, required: false }, // Indicates if the message was a broadcast
 	deviceType: { type: String, required: false }, // String that represents from which device type the message was sent
 	duration: { type: String, required: false }, // Indicates the duration of the message in seconds
