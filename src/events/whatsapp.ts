@@ -77,7 +77,7 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
 			},
 		});
 
-		messageCreate(message);
+		await messageCreate(message);
 	});
 
 	whatsapp.on('message_edit', async message => {
@@ -104,7 +104,7 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
 			},
 		});
 
-		messageEdit(message);
+		await messageEdit(message);
 	});
 
 	whatsapp.on('message_revoke_everyone', async message => {
@@ -135,7 +135,7 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
 			},
 		});
 
-		messageDelete(message);
+		await messageDelete(message);
 	});
 
 	logger.trace('WhatsApp events initialized');

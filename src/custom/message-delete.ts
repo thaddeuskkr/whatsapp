@@ -1,6 +1,6 @@
 import type { Message } from 'whatsapp-web.js';
 
-function messageDelete(message: Message): void {
+async function messageDelete(message: Message): Promise<void> {
 	// Anything you want here will be executed when a message is deleted
 }
 
