@@ -18,11 +18,21 @@ const route = (app: Server) =>
                 }
             }
 
-            const { lastMessageId } = body;
+            const { lastMessageId, from } = body;
 
             let newMessages;
             let editedMessages;
             let deletedMessages;
+
+            let newMessagesFilter: any = {};
+            let editedMessagesFilter: any = { latestEditSenderTimestamp: { $exists: true } };
+            let deletedMessagesFilter: any = { type: 'revoked' };
+
+            if (from && typeof from === 'string' && from.length > 0) {
+                newMessagesFilter.from = from;
+                editedMessagesFilter.from = from;
+                deletedMessagesFilter.from = from;
+            }
 
             if (lastMessageId && typeof lastMessageId === 'string' && lastMessageId.length > 0) {
                 const lastMessage = await Message.findOne({ _id: lastMessageId });
@@ -30,15 +40,19 @@ const route = (app: Server) =>
                     return status(404, { success: false, error: 'Invalid last message ID' });
                 }
 
-                newMessages = await Message.find({ timestamp: { $gt: lastMessage.timestamp } });
-                editedMessages = await Message.find({ latestEditSenderTimestamp: { $gt: lastMessage.timestamp } });
-                deletedMessages = await Message.find({ type: 'revoked', updatedAt: { $gt: lastMessage.timestamp } });
+                newMessagesFilter = { timestamp: { $gt: lastMessage.timestamp } };
+                editedMessagesFilter = { latestEditSenderTimestamp: { $gt: lastMessage.timestamp } };
+                deletedMessagesFilter = { type: 'revoked', updatedAt: { $gt: lastMessage.timestamp } };
+
+                newMessages = await Message.find(newMessagesFilter);
+                editedMessages = await Message.find(editedMessagesFilter);
+                deletedMessages = await Message.find(deletedMessagesFilter);
             } else {
-                newMessages = await Message.find({}).sort({ timestamp: -1 }).limit(100);
-                editedMessages = await Message.find({ latestEditSenderTimestamp: { $exists: true } })
+                newMessages = await Message.find(newMessagesFilter).sort({ timestamp: -1 }).limit(100);
+                editedMessages = await Message.find(editedMessagesFilter)
                     .sort({ latestEditSenderTimestamp: -1 })
                     .limit(100);
-                deletedMessages = await Message.find({ type: 'revoked' }).sort({ updatedAt: -1 }).limit(100);
+                deletedMessages = await Message.find(deletedMessagesFilter).sort({ updatedAt: -1 }).limit(100);
             }
 
             if (newMessages.length === 0 && editedMessages.length === 0 && deletedMessages.length === 0) {
@@ -66,6 +80,7 @@ const route = (app: Server) =>
         {
             body: t.Object({
                 lastMessageId: t.Optional(t.String()),
+                from: t.Optional(t.String()),
             }),
         }
     );
