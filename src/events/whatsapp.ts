@@ -80,6 +80,8 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
         });
 
         await messageCreate(message, logger);
+
+        whatsapp.logger.debug(`Message created: ${message.id._serialized} from ${message.from}`);
     });
 
     whatsapp.on('message_edit', async (message) => {
@@ -107,6 +109,8 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
         });
 
         await messageEdit(message, logger);
+
+        whatsapp.logger.debug(`Message edited: ${message.id._serialized} from ${message.from}`);
     });
 
     whatsapp.on('message_revoke_everyone', async (message) => {
@@ -141,6 +145,8 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
         });
 
         await messageDelete(message, logger);
+
+        whatsapp.logger.debug(`Message revoked: ${message.id._serialized} from ${message.from}`);
     });
 
     logger.trace('WhatsApp events initialized');
