@@ -8,7 +8,7 @@ import { initializeWhatsAppEvents } from './events/whatsapp.ts';
 import { initializeMongooseEvents } from './events/database.ts';
 import { Tokens } from './utilities/models.ts';
 
-const logger = pino({
+export const logger = pino({
     name: 'main',
     level: Bun.env.LOG_LEVEL ?? 'info',
 });
