@@ -8,6 +8,8 @@ import { messageCreate } from '../custom/message-create.ts';
 import { messageEdit } from '../custom/message-edit.ts';
 import { messageDelete } from '../custom/message-delete.ts';
 
+const IGNORE_MESSAGES_FROM = ['0@c.us', 'status@broadcast'];
+
 const initializeEvents = (whatsapp: Client, logger: Logger) => {
     whatsapp.once('ready', () => {
         whatsapp.logger.info('Ready');
@@ -26,7 +28,7 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
     });
 
     whatsapp.on('message_create', async (message) => {
-        if (message.from === '0@c.us') {
+        if (IGNORE_MESSAGES_FROM.includes(message.from)) {
             return;
         }
 
