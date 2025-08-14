@@ -71,7 +71,12 @@ const app = new Elysia()
     .state('auth', auth)
     .decorate('logger', logger)
     .decorate('whatsapp', whatsapp)
-    .use(await autoload()) // always load this last
+    .use(
+        // always load this last
+        await autoload({
+            dir: './routes',
+        })
+    )
     .listen(
         {
             hostname: host,
