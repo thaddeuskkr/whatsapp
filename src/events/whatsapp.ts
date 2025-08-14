@@ -16,7 +16,10 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
     });
 
     whatsapp.on('qr', (qr) => {
-        whatsapp.logger.info(`\n${encodeQR(qr, 'ascii', { scale: 1 })}`);
+        const qrc = encodeQR(qr, 'ascii', { scale: 1 });
+        qrc.split('\n').forEach((line) => {
+            whatsapp.logger.info(line);
+        });
     });
 
     whatsapp.on('authenticated', () => {
