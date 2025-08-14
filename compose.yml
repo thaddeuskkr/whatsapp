@@ -1,8 +1,12 @@
 services:
     whatsapp:
         container_name: whatsapp
+        user: root
         build:
             context: .
             dockerfile: Dockerfile
         env_file:
             - .env
+        volumes:
+            - ./data:/app/.whatsapp
+            - ./src/custom:/app/src/custom
