@@ -10,3 +10,6 @@ LICENSE
 .env
 .editorconfig
 .idea
+
+data
+src/custom
