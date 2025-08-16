@@ -1,6 +1,6 @@
 import { t } from 'elysia';
 import type { Server } from '../index.ts';
-import { Message } from '../utilities/models.ts';
+import { MessageMedia } from 'whatsapp-web.js';
 
 const route = (app: Server) =>
     app.post(
@@ -20,11 +20,25 @@ const route = (app: Server) =>
 
             const { to, content, linkPreview, quotedMessageId, mentions } = body;
 
+            const parseImageTags = (text: string): { cleanContent: string; imageUrl: string | null } => {
+                const imageTagRegex = /\{img:(https?:\/\/[^\}]+)\}/g;
+
+                const firstMatch = imageTagRegex.exec(text);
+                const imageUrl = firstMatch && firstMatch[1] ? firstMatch[1] : null;
+
+                const cleanContent = text.replace(/\{img:(https?:\/\/[^\}]+)\}/g, '').trim();
+
+                return { cleanContent, imageUrl };
+            };
+
+            const { cleanContent, imageUrl } = parseImageTags(content);
+
             try {
-                const message = await whatsapp.sendMessage(to, content, {
+                const message = await whatsapp.sendMessage(to, cleanContent, {
                     linkPreview,
                     quotedMessageId,
                     mentions,
+                    media: imageUrl ? await MessageMedia.fromUrl(imageUrl) : undefined,
                 });
                 return {
                     success: true,
