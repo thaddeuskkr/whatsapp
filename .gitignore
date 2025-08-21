@@ -2,6 +2,8 @@
 .whatsapp
 .wwebjs_cache
 
+data/
+
 # dependencies (bun install)
 node_modules
 
