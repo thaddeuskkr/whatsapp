@@ -9,6 +9,7 @@ import { messageEdit } from '../custom/message-edit.ts';
 import { messageDelete } from '../custom/message-delete.ts';
 
 const IGNORE_MESSAGES_FROM = ['0@c.us', 'status@broadcast'];
+const IGNORE_MESSAGE_TYPES = ['e2e_notification', 'notification_template'];
 
 const initializeEvents = (whatsapp: Client, logger: Logger) => {
     whatsapp.once('ready', () => {
@@ -16,6 +17,13 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
     });
 
     whatsapp.on('qr', (qr) => {
+        broadcast({
+            op: Op.QrCode,
+            message: 'Authentication required',
+            data: {
+                qr,
+            },
+        });
         const qrc = encodeQR(qr, 'ascii', { scale: 1 });
         qrc.split('\n').forEach((line) => {
             whatsapp.logger.info(line);
@@ -31,7 +39,7 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
     });
 
     whatsapp.on('message_create', async (message) => {
-        if (IGNORE_MESSAGES_FROM.includes(message.from)) {
+        if (IGNORE_MESSAGES_FROM.includes(message.from) || IGNORE_MESSAGE_TYPES.includes(message.type)) {
             return;
         }
 
