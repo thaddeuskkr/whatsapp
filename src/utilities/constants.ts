@@ -7,4 +7,5 @@ export enum Op {
     MessageEdit, // to let the client know that a message has been edited
     MessageRevoke, // to let the client know that a message has been revoked
     QrCode, // to let the client know whatsapp needs authentication
+    Authenticated, // to let the client know whatsapp is authenticated
 }

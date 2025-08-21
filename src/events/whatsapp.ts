@@ -31,6 +31,10 @@ const initializeEvents = (whatsapp: Client, logger: Logger) => {
     });
 
     whatsapp.on('authenticated', () => {
+        broadcast({
+            op: Op.Authenticated,
+            message: 'Authentication successful',
+        });
         whatsapp.logger.info('Authentication successful');
     });
 
